@@ -29,3 +29,14 @@ type SQLDatabase interface {
 	SetMaxOpenConns(n int)
 	Stats() sql.DBStats
 }
+
+// SQLRows is an interface for sql.Rows and used for testing and mocking
+type SQLRows interface {
+	Close() error
+	ColumnTypes() ([]*sql.ColumnType, error)
+	Columns() ([]string, error)
+	Err() error
+	Next() bool
+	NextResultSet() bool
+	Scan(dest ...interface{}) error
+}

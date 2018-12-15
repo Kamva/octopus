@@ -15,8 +15,6 @@ import (
 //    Helper functions
 // ----------------------
 
-type rowData map[string]interface{}
-
 var errTest = errors.New("something went wrong")
 
 type sqlOpener func(d string, u string) (base.SQLDatabase, error)
@@ -266,7 +264,7 @@ func TestSQLServer_Insert(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate", "available"},
-			rowData{"name": "Test", "rate": 3.5, "available": true},
+			base.RecordMap{"name": "Test", "rate": 3.5, "available": true},
 		)
 		err := client.Insert("dbo.players", data)
 
@@ -309,7 +307,7 @@ func TestSQLServer_Insert(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate", "available"},
-			rowData{"name": "Test", "rate": 3.5, "available": false},
+			base.RecordMap{"name": "Test", "rate": 3.5, "available": false},
 		)
 		err := client.Insert("dbo.players", data)
 
@@ -326,7 +324,7 @@ func TestSQLServer_Insert(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate", "invalid"},
-			rowData{"name": "Test", "rate": 3.5, "invalid": rowData{"A": "a", "B": "b"}},
+			base.RecordMap{"name": "Test", "rate": 3.5, "invalid": base.RecordMap{"A": "a", "B": "b"}},
 		)
 
 		assert.Panics(t, func() {
@@ -349,7 +347,7 @@ func TestSQLServer_Insert(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate", "available"},
-			rowData{"name": "Test", "rate": 3.5, "available": true},
+			base.RecordMap{"name": "Test", "rate": 3.5, "available": true},
 		)
 		err := client.Insert("dbo.players", data)
 
@@ -379,7 +377,7 @@ func TestSQLServer_Insert(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate", "available"},
-			rowData{"name": "Test", "rate": 3.5, "available": true},
+			base.RecordMap{"name": "Test", "rate": 3.5, "available": true},
 		)
 		err := client.Insert("dbo.players", data)
 
@@ -472,7 +470,7 @@ func TestSQLServer_UpdateByID(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "available"},
-			rowData{"name": "Updated Test", "available": 0},
+			base.RecordMap{"name": "Updated Test", "available": 0},
 		)
 		err := client.UpdateByID("dbo.players", 1, *data)
 
@@ -488,7 +486,7 @@ func TestSQLServer_UpdateByID(t *testing.T) {
 		client := initSQLServer(session)
 		data := base.NewRecordData(
 			[]string{"name", "rate"},
-			rowData{"name": "Updated Test", "rate": 9.1},
+			base.RecordMap{"name": "Updated Test", "rate": 9.1},
 		)
 		err := client.UpdateByID("dbo.players", 1, *data)
 

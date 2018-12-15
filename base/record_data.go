@@ -1,12 +1,15 @@
 package base
 
+// RecordMap is map of string-interface that represent data on a record
+type RecordMap map[string]interface{}
+
 // RecordData is a struct containing a map of string interface which
 // represents data of a record in database and list of columns name
 // used for keep map in order. It could be used for both upserting
 // and fetching data from database. Map key represents the column
 // name and its value represents the column value in database
 type RecordData struct {
-	data map[string]interface{}
+	data RecordMap
 	keys []string
 }
 
@@ -18,7 +21,7 @@ func ZeroRecordData() *RecordData {
 }
 
 // NewRecordData instantiate the record data with keys and data
-func NewRecordData(keys []string, data map[string]interface{}) *RecordData {
+func NewRecordData(keys []string, data RecordMap) *RecordData {
 	return &RecordData{data: data, keys: keys}
 }
 
@@ -60,13 +63,18 @@ func (d *RecordData) Set(key string, value interface{}) {
 
 // Zero will empty all fields of record data
 func (d *RecordData) Zero() {
-	d.data = make(map[string]interface{})
+	d.data = make(RecordMap)
 	d.keys = make([]string, 0, 0)
 }
 
 // Get returns the value sets for `key`
 func (d *RecordData) Get(key string) interface{} {
 	return d.data[key]
+}
+
+// GetMap returns the data map
+func (d *RecordData) GetMap() *RecordMap {
+	return &d.data
 }
 
 // RecordDataSet is slice of RecordData represents results from db

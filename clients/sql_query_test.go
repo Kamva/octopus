@@ -427,7 +427,7 @@ func TestSqlQuery_Update(t *testing.T) {
 			"WHERE name = N'Test'"
 		changeDate := *base.NewRecordData(
 			[]string{"name", "rate"},
-			rowData{"name": "Updated Test", "rate": 5.7},
+			base.RecordMap{"name": "Updated Test", "rate": 5.7},
 		)
 		res := result{rand.Int63n(100)}
 
@@ -448,7 +448,7 @@ func TestSqlQuery_Update(t *testing.T) {
 			"WHERE name = N'Test'"
 		changeDate := *base.NewRecordData(
 			[]string{"name", "rate"},
-			rowData{"name": "Updated Test", "rate": 5.7},
+			base.RecordMap{"name": "Updated Test", "rate": 5.7},
 		)
 		res := result{}
 

@@ -40,8 +40,8 @@ func (s FieldStructure) String() string {
 // TableStructure is representing structure of a table fields
 type TableStructure []FieldStructure
 
-// String convert TableStructure to string value
-func (t TableStructure) String() string {
+// GetInfo convert TableStructure to string value
+func (t TableStructure) GetInfo() interface{} {
 	var s = make([]string, 0)
 	for _, field := range t {
 		s = append(s, field.String())

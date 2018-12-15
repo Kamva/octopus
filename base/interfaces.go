@@ -6,7 +6,7 @@ type Client interface {
 
 	// CreateTable creates `tableName` table with field and structure
 	// defined in `structure` parameter for each table fields
-	CreateTable(tableName string, structure TableStructure) error
+	CreateTable(tableName string, info TableInfo) error
 
 	// EnsureIndex ensures that `index` is exists on `tableName` table,
 	// if not, it tries to create index with specified condition in
@@ -84,4 +84,10 @@ type Condition interface {
 
 	// GetValue returns the value to be compared or checked in query
 	GetValue() interface{}
+}
+
+// TableInfo is an interface used for data of a table or collection.
+// it could be a table structure or collection info.
+type TableInfo interface {
+	GetInfo() interface{}
 }

@@ -21,9 +21,9 @@ type SQLServer struct {
 
 // CreateTable creates `tableName` table with field and structure
 // defined in `structure` parameter for each table fields
-func (c *SQLServer) CreateTable(tableName string, structure base.TableStructure) error {
+func (c *SQLServer) CreateTable(tableName string, info base.TableInfo) error {
 	existenceCheckQuery := c.generateTableExistenceCheckQuery(tableName)
-	createQuery := c.generateCreateQuery(tableName, structure)
+	createQuery := c.generateCreateQuery(tableName, info)
 
 	_, err := c.session.Exec(fmt.Sprintf(
 		"IF NOT EXISTS (%s) BEGIN %s END",
@@ -190,8 +190,8 @@ func (c *SQLServer) enquoteValue(i interface{}) string {
 	panic(fmt.Sprintf("Value with type of %s is not supported", t.Kind().String()))
 }
 
-func (c *SQLServer) generateCreateQuery(table string, structures base.TableStructure) string {
-	return fmt.Sprintf("CREATE TABLE %s (%s)", table, structures.String())
+func (c *SQLServer) generateCreateQuery(table string, info base.TableInfo) string {
+	return fmt.Sprintf("CREATE TABLE %s (%s)", table, info.GetInfo().(string))
 }
 
 // NewSQLServer instantiate and return a new SQLServer session object

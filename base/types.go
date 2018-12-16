@@ -3,6 +3,8 @@ package base
 import (
 	"fmt"
 	"strings"
+
+	"github.com/globalsign/mgo"
 )
 
 // Enquoter is function alias for clients enquoting operation
@@ -59,4 +61,15 @@ type Sort struct {
 
 	// Descending determine sort is descending or ascending
 	Descending bool
+}
+
+// CollectionInfo is a wrapper for mgo.CollectionInfo that make it
+// compatible with TableInfo interface for using in clients.
+type CollectionInfo struct {
+	Info *mgo.CollectionInfo
+}
+
+// GetInfo returns the base mgo.CollectionInfo object
+func (c CollectionInfo) GetInfo() interface{} {
+	return c.Info
 }

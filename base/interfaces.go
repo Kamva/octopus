@@ -31,25 +31,25 @@ type Client interface {
 	DeleteByID(tableName string, id interface{}) error
 
 	// Query generates and returns query object for further operations
-	Query(tableName string, conditions ...Condition) Query
+	Query(tableName string, conditions ...Condition) QueryBuilder
 
 	// Close disconnect client from database and release the taken memory
 	Close()
 }
 
-// Query is an object that contains information about query. With Query
+// QueryBuilder is an object that contains information about query. With QueryBuilder
 // you can fetch, update and delete records from database.
-type Query interface {
+type QueryBuilder interface {
 
 	// OrderBy set the order of returning result in following command
-	OrderBy(sorts ...Sort) Query
+	OrderBy(sorts ...Sort) QueryBuilder
 
 	// Limit set the limit that determines how many results should be
 	// returned in the following fetch command.
-	Limit(n int) Query
+	Limit(n int) QueryBuilder
 
 	// Skip set the starting offset of the following fetch command
-	Skip(n int) Query
+	Skip(n int) QueryBuilder
 
 	// Count execute a count command that will return the number records in
 	// specified destination table. If the query conditions was empty, it

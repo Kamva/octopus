@@ -24,7 +24,7 @@ func newSQLQuery(session base.SQLDatabase, table string, conditions []base.Condi
 }
 
 // OrderBy set the order of returning result in following command
-func (q *sqlQuery) OrderBy(sorts ...base.Sort) base.Query {
+func (q *sqlQuery) OrderBy(sorts ...base.Sort) base.QueryBuilder {
 	q.sorts = sorts
 
 	return q
@@ -32,14 +32,14 @@ func (q *sqlQuery) OrderBy(sorts ...base.Sort) base.Query {
 
 // Limit set the limit in session that determines how many results should
 // be returned in the following fetch command.
-func (q *sqlQuery) Limit(n int) base.Query {
+func (q *sqlQuery) Limit(n int) base.QueryBuilder {
 	q.limit = n
 
 	return q
 }
 
 // Skip set the starting offset of the following fetch command
-func (q *sqlQuery) Skip(n int) base.Query {
+func (q *sqlQuery) Skip(n int) base.QueryBuilder {
 	q.offset = n
 
 	return q

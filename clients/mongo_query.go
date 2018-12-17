@@ -15,7 +15,7 @@ type mongoQuery struct {
 }
 
 // OrderBy set the order of returning result in following command
-func (q *mongoQuery) OrderBy(sorts ...base.Sort) base.Query {
+func (q *mongoQuery) OrderBy(sorts ...base.Sort) base.QueryBuilder {
 	for _, sort := range sorts {
 		if sort.Descending {
 			q.query.Sort(fmt.Sprintf("-%s", sort.Column))
@@ -29,14 +29,14 @@ func (q *mongoQuery) OrderBy(sorts ...base.Sort) base.Query {
 
 // Limit set the limit that determines how many results should be
 // returned in the following fetch command.
-func (q *mongoQuery) Limit(n int) base.Query {
+func (q *mongoQuery) Limit(n int) base.QueryBuilder {
 	q.query.Limit(n)
 
 	return q
 }
 
 // Skip set the starting offset of the following fetch command
-func (q *mongoQuery) Skip(n int) base.Query {
+func (q *mongoQuery) Skip(n int) base.QueryBuilder {
 	q.query.Skip(n)
 
 	return q

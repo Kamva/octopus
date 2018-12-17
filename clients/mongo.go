@@ -78,8 +78,8 @@ func (c *MongoDB) DeleteByID(collectionName string, id interface{}) error {
 	return c.GetCollection(collectionName).RemoveId(id)
 }
 
-// Query generates and returns query object for further operations
-func (c *MongoDB) Query(collectionName string, conditions ...base.Condition) base.Query {
+// QueryBuilder generates and returns query object for further operations
+func (c *MongoDB) Query(collectionName string, conditions ...base.Condition) base.QueryBuilder {
 	queryMap := c.parseConditions(conditions...)
 	query := queryMongoDB(c, collectionName, queryMap)
 
@@ -180,7 +180,7 @@ func NewMongoDB(url string, dbName string) base.Client {
 	}
 }
 
-// These functions will make mocking mgo.Dial function and mgo.Query easier
+// These functions will make mocking mgo.Dial function and mgo.QueryBuilder easier
 var dial = func(url string) (base.MongoSession, error) {
 	return mgo.Dial(url)
 }

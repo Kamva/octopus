@@ -141,7 +141,7 @@ func (c *SQLServer) DeleteByID(tableName string, id interface{}) error {
 }
 
 // Query generates and returns sqlQuery object for further operations
-func (c *SQLServer) Query(tableName string, conditions ...base.Condition) base.Query {
+func (c *SQLServer) Query(tableName string, conditions ...base.Condition) base.QueryBuilder {
 	return newSQLQuery(c.session, tableName, conditions, c.enquoteValue)
 }
 

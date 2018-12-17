@@ -143,7 +143,7 @@ func (c *Postgres) DeleteByID(tableName string, id interface{}) error {
 }
 
 // Query generates and returns sqlQuery object for further operations
-func (c *Postgres) Query(tableName string, conditions ...base.Condition) base.Query {
+func (c *Postgres) Query(tableName string, conditions ...base.Condition) base.QueryBuilder {
 	return newSQLQuery(c.session, tableName, conditions, c.enquoteValue)
 }
 

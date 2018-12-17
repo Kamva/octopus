@@ -1,5 +1,7 @@
 package base
 
+type Pruner func(recordMap *RecordMap)
+
 // RecordMap is map of string-interface that represent data on a record
 type RecordMap map[string]interface{}
 
@@ -75,6 +77,10 @@ func (d *RecordData) Get(key string) interface{} {
 // GetMap returns the data map
 func (d *RecordData) GetMap() *RecordMap {
 	return &d.data
+}
+
+func (d *RecordData) PruneData(pruner Pruner) {
+	pruner(&d.data)
 }
 
 // RecordDataSet is slice of RecordData represents results from db

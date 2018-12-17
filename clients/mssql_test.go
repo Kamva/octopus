@@ -38,7 +38,7 @@ func initSQLServer(session base.SQLDatabase) *SQLServer {
 	return &SQLServer{session: session}
 }
 
-func getTableStructure() base.TableStructure {
+func getSQLTableStructure() base.TableStructure {
 	return base.TableStructure{
 		{Name: "ID", Type: "INT", Options: "IDENTITY PRIMARY KEY"},
 		{Name: "SID", Type: "TINYINT", Options: "IDENTITY(1,5)"},
@@ -79,14 +79,11 @@ func TestNewSQLServer(t *testing.T) {
 		defer func() { sqlOpen = original }()
 
 		db := new(SQLDatabase)
-		url := "localhost:1433"
-		sqlOpen = sqlOpenMock("sqlserver", url, db, nil)
+		url := "invalid URL"
+		sqlOpen = sqlOpenMock("sqlserver", url, db, errTest)
 
-		assert.NotPanics(t, func() {
-			client := NewSQLServer(url)
-			sql := client.(*SQLServer)
-
-			assert.Equal(t, db, sql.session)
+		assert.Panics(t, func() {
+			_ = NewSQLServer(url)
 		})
 	})
 }
@@ -115,7 +112,7 @@ func TestSQLServer_CreateTable(t *testing.T) {
 		session.On("Exec", createQuery).Return(nil, nil)
 
 		client := initSQLServer(session)
-		err := client.CreateTable("dbo.accounts", getTableStructure())
+		err := client.CreateTable("dbo.accounts", getSQLTableStructure())
 
 		assert.Nil(t, err)
 	})
@@ -126,7 +123,7 @@ func TestSQLServer_CreateTable(t *testing.T) {
 		client := initSQLServer(session)
 
 		assert.Panics(t, func() {
-			_ = client.CreateTable("invalidTableName", getTableStructure())
+			_ = client.CreateTable("invalidTableName", getSQLTableStructure())
 		})
 	})
 
@@ -136,7 +133,7 @@ func TestSQLServer_CreateTable(t *testing.T) {
 		session.On("Exec", mock.AnythingOfType("string")).Return(nil, errTest)
 
 		client := initSQLServer(session)
-		err := client.CreateTable("dbo.accounts", getTableStructure())
+		err := client.CreateTable("dbo.accounts", getSQLTableStructure())
 
 		assert.NotNil(t, err)
 	})

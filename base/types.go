@@ -73,3 +73,12 @@ type CollectionInfo struct {
 func (c CollectionInfo) GetInfo() interface{} {
 	return c.Info
 }
+
+// Query is an alias for slice of objects that implement Condition
+type Query []Condition
+
+// SQLTag is a map of scheme sql tags key value
+type SQLTag map[string]string
+
+// JSONMap is a map represent a json in key value format
+type JSONMap map[string]interface{}

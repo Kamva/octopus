@@ -91,3 +91,24 @@ type Condition interface {
 type TableInfo interface {
 	GetInfo() interface{}
 }
+
+// Scheme is an interface represent a record or document in database
+type Scheme interface {
+
+	// GetID returns the value of the record identifier
+	GetID() interface{}
+
+	// GetKeyName return the name of primary key field name
+	GetKeyName() string
+}
+
+// MsScheme is the same as Scheme except that it has one more
+// method that is for getting table scheme name in database
+type MsScheme interface {
+
+	// Extend Scheme interface
+	Scheme
+
+	// GetSchema returns name of the table schema
+	GetSchema() string
+}

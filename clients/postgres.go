@@ -86,9 +86,8 @@ func (c *Postgres) Insert(tableName string, data *base.RecordData) error {
 	data.PruneData(func(recordMap *base.RecordMap) {
 		maps := *recordMap
 		for key, value := range maps {
-			kind := reflect.TypeOf(value).Kind()
-			if kind == reflect.Slice || kind == reflect.Array {
-				(*recordMap)[key] = string(value.([]byte))
+			if v, ok := value.([]uint8); ok {
+				(*recordMap)[key] = string(v)
 			}
 		}
 	})

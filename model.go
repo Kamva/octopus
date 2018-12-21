@@ -31,7 +31,6 @@ type Model struct {
 	tableName string
 	config    base.DBConfig
 	client    base.Client
-	driver    base.Driver
 }
 
 // Initiate initialize the model and prepare it for interacting with database

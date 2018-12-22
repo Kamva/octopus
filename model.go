@@ -31,7 +31,6 @@ type Model struct {
 	tableName string
 	config    base.DBConfig
 	client    base.Client
-	driver    base.Driver
 }
 
 // Initiate initialize the model and prepare it for interacting with database
@@ -91,7 +90,7 @@ func (m *Model) Find(id interface{}) (base.Scheme, error) {
 
 // Where returns a Query Builder based on given conditions on model table/collection
 // that you can fetch, update or delete records/document match the query.
-func (m *Model) Where(query base.Query) base.QueryBuilder {
+func (m *Model) Where(query ...base.Condition) base.QueryBuilder {
 	m.PrepareClient()
 	defer m.CloseClient()
 

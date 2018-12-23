@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kamva/octopus/base"
-	"github.com/kamva/octopus/term"
+	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/octopus/term"
 )
 
 // sqlQuery is a struct containing information about sqlQuery

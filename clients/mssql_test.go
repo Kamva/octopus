@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/kamva/octopus/base"
-	. "github.com/kamva/octopus/clients/internal"
-	"github.com/kamva/octopus/term"
+	"github.com/Kamva/octopus/base"
+	. "github.com/Kamva/octopus/clients/internal"
+	"github.com/Kamva/octopus/term"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

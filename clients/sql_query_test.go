@@ -4,10 +4,10 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/Kamva/octopus/base"
+	. "github.com/Kamva/octopus/clients/internal"
+	"github.com/Kamva/octopus/term"
 	"github.com/icrowley/fake"
-	"github.com/kamva/octopus/base"
-	. "github.com/kamva/octopus/clients/internal"
-	"github.com/kamva/octopus/term"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

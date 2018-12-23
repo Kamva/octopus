@@ -1,5 +1,8 @@
 # Octopus
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Kamva/octopus)](https://goreportcard.com/report/github.com/Kamva/octopus)
+[![Build Status](https://travis-ci.org/Kamva/octopus.svg?branch=master)](https://travis-ci.org/Kamva/octopus)
+
 Octopus is an ORM/ODM written in Golang. It supports SQL and NoSQL databases and is easy to use.
 
 ## Get Started
@@ -7,13 +10,13 @@ Octopus is an ORM/ODM written in Golang. It supports SQL and NoSQL databases and
 Octopus is dependent to another library called nautilus. For getting nautilus run the following command:
 
 ```
-go get -u github.com/kamva/nautilus
+go get -u github.com/Kamva/nautilus
 ```
 
 Then run the following command to get octopus package
 
 ```
-go get -u github.com/kamva/octopus
+go get -u github.com/Kamva/octopus
 ```
 
 ## Usage
@@ -28,8 +31,8 @@ and run `Initiate` method on its constructor.
 package models
 
 import (
-    "github.com/kamva/octopus"
-    "github.com/kamva/octopus/base"
+    "github.com/Kamva/octopus"
+    "github.com/Kamva/octopus/base"
 )
 
 
@@ -65,7 +68,7 @@ Then you can use model like this:
 package main
 
 import (
-    "github.com/kamva/octopus/term"
+    "github.com/Kamva/octopus/term"
 	"models"
 )
 

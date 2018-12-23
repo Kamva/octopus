@@ -1,5 +1,6 @@
 package base
 
+// Pruner is a function that can prune data of a record data
 type Pruner func(recordMap *RecordMap)
 
 // RecordMap is map of string-interface that represent data on a record
@@ -79,6 +80,7 @@ func (d *RecordData) GetMap() *RecordMap {
 	return &d.data
 }
 
+// PruneData prune recordData data by pruner function
 func (d *RecordData) PruneData(pruner Pruner) {
 	pruner(&d.data)
 }

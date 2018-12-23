@@ -1,11 +1,11 @@
 package clients
 
 import (
+	"github.com/Kamva/nautilus/excp"
+	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/octopus/term"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/nautilus/excp"
-	"github.com/kamva/octopus/base"
-	"github.com/kamva/octopus/term"
 )
 
 // MongoDB is a client for the MongoDB
@@ -78,7 +78,7 @@ func (c *MongoDB) DeleteByID(collectionName string, id interface{}) error {
 	return c.GetCollection(collectionName).RemoveId(id)
 }
 
-// QueryBuilder generates and returns query object for further operations
+// Query generates and returns query object for further operations
 func (c *MongoDB) Query(collectionName string, conditions ...base.Condition) base.QueryBuilder {
 	queryMap := c.parseConditions(conditions...)
 	query := queryMongoDB(c, collectionName, queryMap)

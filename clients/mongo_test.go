@@ -3,10 +3,10 @@ package clients
 import (
 	"testing"
 
+	"github.com/Kamva/octopus/base"
+	. "github.com/Kamva/octopus/clients/internal"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/octopus/base"
-	. "github.com/kamva/octopus/clients/internal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

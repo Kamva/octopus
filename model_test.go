@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"github.com/kamva/octopus/term"
+	"github.com/Kamva/octopus/term"
 
+	"github.com/Kamva/octopus/base"
+	. "github.com/Kamva/octopus/internal"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/octopus/base"
-	. "github.com/kamva/octopus/internal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -603,7 +603,7 @@ func TestModel_Where(t *testing.T) {
 	client.On("Query", "profiles", conditions[0], conditions[1]).Return(builder)
 	model.client = client
 
-	b := model.Where(conditions)
+	b := model.Where(conditions...)
 
 	assert.Equal(t, builder, b)
 }

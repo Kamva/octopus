@@ -3,8 +3,8 @@ package clients
 import (
 	"fmt"
 
+	"github.com/Kamva/octopus/base"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/octopus/base"
 )
 
 // MongoQuery is a struct containing mgo.Query object

@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/kamva/nautilus/excp"
-	"github.com/kamva/octopus/base"
+	"github.com/Kamva/nautilus/excp"
+	"github.com/Kamva/octopus/base"
 
 	// Register mssql driver to database/sql So you can use
 	// sql.Open("sqlserver", ...) to open postgres connection session

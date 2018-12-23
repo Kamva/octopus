@@ -9,11 +9,11 @@ import (
 
 	"github.com/globalsign/mgo/bson"
 
-	"github.com/kamva/nautilus"
-	"github.com/kamva/nautilus/excp"
-	"github.com/kamva/nautilus/url"
-	"github.com/kamva/octopus/base"
-	"github.com/kamva/octopus/clients"
+	"github.com/Kamva/nautilus"
+	"github.com/Kamva/nautilus/excp"
+	"github.com/Kamva/nautilus/url"
+	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/octopus/clients"
 )
 
 var newMongo = clients.NewMongoDB

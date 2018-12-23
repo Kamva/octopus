@@ -1,11 +1,11 @@
 package clients
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/kamva/octopus/base"
-	"github.com/kataras/iris/core/errors"
+	"github.com/Kamva/octopus/base"
 )
 
 // fetchSingleRecord Fetch a single result from rows and set into record data

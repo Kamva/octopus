@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/kamva/nautilus/excp"
-	"github.com/kamva/octopus/base"
+	"github.com/Kamva/nautilus/excp"
+	"github.com/Kamva/octopus/base"
 
 	// Register pq postgres client to database/sql So you can use
 	// sql.Open("postgres", ...) to open postgres connection session

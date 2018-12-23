@@ -1,11 +1,11 @@
 package clients
 
 import (
+	"github.com/Kamva/nautilus/excp"
+	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/octopus/term"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/nautilus/excp"
-	"github.com/kamva/octopus/base"
-	"github.com/kamva/octopus/term"
 )
 
 // MongoDB is a client for the MongoDB

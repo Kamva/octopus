@@ -603,7 +603,7 @@ func TestModel_Where(t *testing.T) {
 	client.On("Query", "profiles", conditions[0], conditions[1]).Return(builder)
 	model.client = client
 
-	b := model.Where(conditions)
+	b := model.Where(conditions...)
 
 	assert.Equal(t, builder, b)
 }

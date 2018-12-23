@@ -1,5 +1,8 @@
 # Octopus
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Kamva/octopus)](https://goreportcard.com/report/github.com/Kamva/octopus)
+[![Build Status](https://travis-ci.org/Kamva/octopus.svg?branch=master)](https://travis-ci.org/Kamva/octopus)
+
 Octopus is an ORM/ODM written in Golang. It supports SQL and NoSQL databases and is easy to use.
 
 ## Get Started

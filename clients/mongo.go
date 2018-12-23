@@ -78,7 +78,7 @@ func (c *MongoDB) DeleteByID(collectionName string, id interface{}) error {
 	return c.GetCollection(collectionName).RemoveId(id)
 }
 
-// QueryBuilder generates and returns query object for further operations
+// Query generates and returns query object for further operations
 func (c *MongoDB) Query(collectionName string, conditions ...base.Condition) base.QueryBuilder {
 	queryMap := c.parseConditions(conditions...)
 	query := queryMongoDB(c, collectionName, queryMap)

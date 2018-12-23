@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"github.com/kamva/octopus/term"
+	"github.com/Kamva/octopus/term"
 
+	"github.com/Kamva/octopus/base"
+	. "github.com/Kamva/octopus/internal"
 	"github.com/globalsign/mgo/bson"
-	"github.com/kamva/octopus/base"
-	. "github.com/kamva/octopus/internal"
 	"github.com/stretchr/testify/assert"
 )
 

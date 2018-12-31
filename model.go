@@ -7,13 +7,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/globalsign/mgo/bson"
-
 	"github.com/Kamva/nautilus"
-	"github.com/Kamva/nautilus/excp"
 	"github.com/Kamva/nautilus/url"
 	"github.com/Kamva/octopus/base"
 	"github.com/Kamva/octopus/clients"
+	"github.com/Kamva/shark"
+	"github.com/globalsign/mgo/bson"
 )
 
 var newMongo = clients.NewMongoDB
@@ -63,12 +62,12 @@ func (m *Model) EnsureIndex(indices ...base.Index) {
 
 	if m.config.Driver != base.Mongo {
 		err := m.client.CreateTable(m.tableName, m.getTableStruct())
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 	}
 
 	for _, index := range indices {
 		err := m.client.EnsureIndex(m.tableName, index)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 	}
 }
 
@@ -419,7 +418,7 @@ func (m *Model) getMSSQLFieldOptions(tags base.SQLTag) (options string) {
 
 func (m *Model) getSchemeData(scheme base.Scheme) []nautilus.FieldData {
 	fieldsData, err := nautilus.GetStructFieldsData(scheme)
-	excp.PanicIfErrCustomMsg(err, fmt.Sprintf("Invalid scheme %v", m.scheme))
+	shark.PanicIfErrorWithMessage(err, fmt.Sprintf("Invalid scheme %v", m.scheme))
 	return fieldsData
 }
 
@@ -456,7 +455,7 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 		fieldVal.SetUint(uint64(value.(int64)))
 	case reflect.Uint64:
 		f64, err := strconv.ParseFloat(value.(string), 64)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 		fieldVal.SetUint(uint64(f64))
 	case reflect.Float32, reflect.Float64:
 		fieldVal.SetFloat(value.(float64))
@@ -469,7 +468,7 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 	case reflect.Map:
 		data := fieldVal.Addr().Interface().(*base.JSONMap)
 		err := json.Unmarshal([]byte(value.(string)), data)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 	case reflect.Array, reflect.Slice:
 		valBytes := []byte(value.(string))
 		s := string(valBytes[1 : len(valBytes)-1])
@@ -496,7 +495,7 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 	case reflect.Struct:
 		data := fieldVal.Addr().Interface()
 		err := json.Unmarshal([]byte(value.(string)), data)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 	default:
 		panic(fmt.Sprintf("Unsupported type [%s]", fieldVal.Type().String()))
 	}
@@ -552,13 +551,13 @@ func (m *Model) makeSliceValue(elem reflect.Value, value string) reflect.Value {
 		data := elem.Addr().Interface()
 		value = strings.Replace(value, "\\", "", -1)
 		err = json.Unmarshal([]byte(value)[1:len(value)-1], data)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 		return reflect.ValueOf(data).Elem()
 	default:
 		panic(fmt.Sprintf("Unsupported type [[]%s]", elem.Type().String()))
 	}
 
-	excp.PanicIfErr(err)
+	shark.PanicIfError(err)
 	return reflect.ValueOf(cVal)
 }
 

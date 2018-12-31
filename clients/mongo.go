@@ -1,9 +1,9 @@
 package clients
 
 import (
-	"github.com/Kamva/nautilus/excp"
 	"github.com/Kamva/octopus/base"
 	"github.com/Kamva/octopus/term"
+	"github.com/Kamva/shark"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 )
@@ -172,7 +172,7 @@ func (c *MongoDB) parseConditions(conditions ...base.Condition) bson.M {
 // NewMongoDB instantiates and returns a ne MongoDB session object
 func NewMongoDB(url string, dbName string) base.Client {
 	session, err := dial(url)
-	excp.PanicIfErr(err)
+	shark.PanicIfError(err)
 
 	return &MongoDB{
 		session: session,

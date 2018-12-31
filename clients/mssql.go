@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Kamva/nautilus/excp"
 	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/shark"
 
 	// Register mssql driver to database/sql So you can use
 	// sql.Open("sqlserver", ...) to open postgres connection session
@@ -197,7 +197,7 @@ func (c *SQLServer) generateCreateQuery(table string, info base.TableInfo) strin
 // NewSQLServer instantiate and return a new SQLServer session object
 func NewSQLServer(url string) base.Client {
 	session, err := sqlOpen("sqlserver", url)
-	excp.PanicIfErr(err)
+	shark.PanicIfError(err)
 
 	return &SQLServer{session: session}
 }

@@ -3,13 +3,11 @@ package clients
 import (
 	"testing"
 
-	"github.com/Kamva/octopus/term"
-
 	"github.com/Kamva/octopus/base"
-	"github.com/stretchr/testify/mock"
-
 	. "github.com/Kamva/octopus/clients/internal"
+	"github.com/Kamva/octopus/term"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 // ----------------------

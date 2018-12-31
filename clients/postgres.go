@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Kamva/nautilus/excp"
 	"github.com/Kamva/octopus/base"
+	"github.com/Kamva/shark"
 
 	// Register pq postgres client to database/sql So you can use
 	// sql.Open("postgres", ...) to open postgres connection session
@@ -165,7 +165,7 @@ func (c *Postgres) enquoteValue(i interface{}) string {
 		return c.enquoteSliceValue(i)
 	case reflect.Map, reflect.Struct:
 		bytes, err := json.Marshal(i)
-		excp.PanicIfErr(err)
+		shark.PanicIfError(err)
 		return fmt.Sprintf("'%s'", string(bytes))
 	case reflect.String:
 		return fmt.Sprintf("'%s'", i.(string))
@@ -199,7 +199,7 @@ func (c *Postgres) enquoteSliceValue(i interface{}) string {
 
 		for _, item := range slice {
 			bytes, err := json.Marshal(item)
-			excp.PanicIfErr(err)
+			shark.PanicIfError(err)
 			tmp = append(tmp, fmt.Sprintf("'%s'", string(bytes)))
 		}
 
@@ -218,7 +218,7 @@ func (c *Postgres) enquoteSliceValue(i interface{}) string {
 // NewPostgres instantiate and return a new PostgreSQL session object
 func NewPostgres(url string) base.Client {
 	session, err := sqlOpen("postgres", url)
-	excp.PanicIfErr(err)
+	shark.PanicIfError(err)
 
 	return &Postgres{session: session}
 }

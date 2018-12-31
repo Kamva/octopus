@@ -2,21 +2,16 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Kamva/octopus)](https://goreportcard.com/report/github.com/Kamva/octopus)
 [![Build Status](https://travis-ci.org/Kamva/octopus.svg?branch=master)](https://travis-ci.org/Kamva/octopus)
+[![codecov](https://codecov.io/gh/Kamva/octopus/branch/master/graph/badge.svg)](https://codecov.io/gh/Kamva/octopus)
 
 Octopus is an ORM/ODM written in Golang. It supports SQL and NoSQL databases and is easy to use.
 
 ## Get Started
 
-Octopus is dependent to another library called nautilus. For getting nautilus run the following command:
+Run the following command to get octopus package
 
 ```
-go get -u github.com/Kamva/nautilus
-```
-
-Then run the following command to get octopus package
-
-```
-go get -u github.com/Kamva/octopus
+go get -u -t github.com/Kamva/octopus
 ```
 
 ## Usage

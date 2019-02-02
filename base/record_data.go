@@ -1,5 +1,9 @@
 package base
 
+import (
+	"fmt"
+)
+
 // Pruner is a function that can prune data of a record data
 type Pruner func(recordMap *RecordMap)
 
@@ -83,6 +87,29 @@ func (d *RecordData) GetMap() *RecordMap {
 // PruneData prune recordData data by pruner function
 func (d *RecordData) PruneData(pruner Pruner) {
 	pruner(&d.data)
+}
+
+// RenameKey rename the currentName key to newName
+func (d *RecordData) RenameKey(currentName string, newName string) error {
+	// if key is not exists on map, add it to keys
+	if _, ok := d.data[newName]; !ok {
+		d.keys = append(d.keys, newName)
+	} else {
+		return fmt.Errorf("cannot rename key %s to %s: new key name already exists", currentName, newName)
+	}
+
+	d.data[newName] = d.data[currentName]
+
+	// delete currentName key from data and keys
+	delete(d.data, currentName)
+	for i, key := range d.keys {
+		if key == currentName {
+			d.keys = append(d.keys[:i], d.keys[i+1:]...)
+			break
+		}
+	}
+
+	return nil
 }
 
 // RecordDataSet is slice of RecordData represents results from db

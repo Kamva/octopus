@@ -7,3 +7,11 @@ type Scheme struct{}
 func (s Scheme) GetKeyName() string {
 	return "id"
 }
+
+// MongoScheme is the base scheme, same as Scheme, for mongo db schemes
+type MongoScheme struct{}
+
+// GetKeyName return the name of primary key field name
+func (s MongoScheme) GetKeyName() string {
+	return "_id"
+}

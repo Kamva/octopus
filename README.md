@@ -51,7 +51,7 @@ type UserModel struct {
 func NewUserModel() *UserModel {
     model :=  &UserModel{}
     config := base.DBConfig{Driver:base.PG, Host:"localhost", Port: "5432", Database: "MyDatabase"}
-    model.Initiate(User{}, config)
+    model.Initiate(&User{}, config)
     
     return model
 }

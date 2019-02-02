@@ -214,7 +214,7 @@ func (m *Model) getTableStruct() base.TableStructure {
 
 	tableStructure := make([]base.FieldStructure, 0)
 	for _, fieldData := range fieldsData {
-		tagData := m.parseTag(fieldData.Tags.Get("sql"))
+		tagData := m.parseTag(fieldData)
 
 		if _, ok := tagData["ignore"]; !ok && !fieldData.Anonymous && fieldData.Exported {
 			var fieldName string
@@ -243,7 +243,8 @@ func (m *Model) getTableStruct() base.TableStructure {
 	return tableStructure
 }
 
-func (m *Model) parseTag(tagValue string) base.SQLTag {
+func (m *Model) parseTag(data nautilus.FieldData) base.SQLTag {
+	tagValue := data.Tags.Get("sql")
 	valueSlice := strings.Split(tagValue, ";")
 	tag := make(base.SQLTag)
 
@@ -254,6 +255,12 @@ func (m *Model) parseTag(tagValue string) base.SQLTag {
 		} else {
 			tag[slice] = "true"
 		}
+	}
+
+	// check for bson tag, if present it can be used as column tag
+	tagValue = data.Tags.Get("bson")
+	if tagValue != "" {
+		tag["column"] = tagValue
 	}
 
 	return tag
@@ -426,7 +433,7 @@ func (m *Model) fillScheme(scheme base.Scheme, data base.RecordMap) {
 	fieldsData := m.getSchemeData(scheme)
 
 	for _, fieldData := range fieldsData {
-		tagData := m.parseTag(fieldData.Tags.Get("sql"))
+		tagData := m.parseTag(fieldData)
 
 		if _, ok := tagData["ignore"]; !ok && !fieldData.Anonymous && fieldData.Exported {
 			var fieldName string
@@ -566,7 +573,7 @@ func (m *Model) generateRecordData(scheme base.Scheme, insert bool) *base.Record
 	data := base.ZeroRecordData()
 
 	for _, fieldData := range fieldsData {
-		tagData := m.parseTag(fieldData.Tags.Get("sql"))
+		tagData := m.parseTag(fieldData)
 
 		if _, ok := tagData["ignore"]; !ok && !fieldData.Anonymous && fieldData.Exported {
 			var fieldName string

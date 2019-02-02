@@ -46,15 +46,18 @@ func (s scheme) GetID() interface{} {
 }
 
 type User struct {
-	scheme
-	ID     bson.ObjectId
-	Name   string
-	Age    int
-	Status bool `sql:"column:available"`
+	ID     bson.ObjectId `bson:"_id"`
+	Name   string        `bson:"name"`
+	Age    int           `bson:"age"`
+	Status bool          `bson:"available"`
 }
 
 func (u User) GetID() interface{} {
 	return u.ID
+}
+
+func (u User) GetKeyName() string {
+	return "_id"
 }
 
 type Profile struct {
@@ -622,8 +625,8 @@ func TestModel_Create(t *testing.T) {
 		client.On("Insert", "users", rData).Return(nil).
 			Run(func(args mock.Arguments) {
 				rd := args.Get(1).(*base.RecordData)
-				rd.Set("id", objectID)
-				rd.Set("age", int64(18))
+				rd.Set("_id", objectID)
+				rd.Set("age", 18)
 			})
 		model.client = client
 

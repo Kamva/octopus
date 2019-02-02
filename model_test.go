@@ -46,6 +46,7 @@ func (s scheme) GetID() interface{} {
 }
 
 type User struct {
+	MongoScheme
 	ID     bson.ObjectId `bson:"_id"`
 	Name   string        `bson:"name"`
 	Age    int           `bson:"age"`
@@ -54,10 +55,6 @@ type User struct {
 
 func (u User) GetID() interface{} {
 	return u.ID
-}
-
-func (u User) GetKeyName() string {
-	return "_id"
 }
 
 type Profile struct {

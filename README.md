@@ -32,7 +32,11 @@ import (
 
 
 type User struct {
-    octopus.Scheme // This is optional. This only adds GetKeyName method implementation that returns `id` by default
+    // This is optional. This only adds `GetKeyName` method implementation that
+    // returns `id` by default. for MongoDB you should use `octopus.MongoScheme`
+    // or implemet `GetKeyName` method yourself, as default primary key in Mongo
+    // is `_id`.
+    octopus.Scheme
     ID          int     `sql:"pk"`
     Name        string  `sql:"column:full_name"`
     Email       string  `sql:"unique"`

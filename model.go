@@ -457,7 +457,11 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 	case reflect.Bool:
 		fieldVal.SetBool(value.(bool))
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		fieldVal.SetInt(value.(int64))
+		if val, ok := value.(int); ok {
+			fieldVal.SetInt(int64(val))
+		} else {
+			fieldVal.SetInt(value.(int64))
+		}
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32:
 		fieldVal.SetUint(uint64(value.(int64)))
 	case reflect.Uint64:

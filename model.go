@@ -632,9 +632,7 @@ func (m *Model) shouldSkipField(insert bool, nullable bool, value interface{}, f
 func (m *Model) isZero(value interface{}) bool {
 	t := reflect.TypeOf(value)
 	if !t.Comparable() {
-		panic(fmt.Errorf("type is not comparable: %v", t))
 		return false
-
 	}
 	return value == reflect.Zero(t).Interface()
 }

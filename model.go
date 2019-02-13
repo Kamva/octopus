@@ -507,7 +507,9 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 		fieldVal.Set(slice)
 	case reflect.Struct:
 		data := fieldVal.Addr().Interface()
-		err := json.Unmarshal([]byte(value.(string)), data)
+		b, err := json.Marshal(value)
+		shark.PanicIfError(err)
+		err = json.Unmarshal(b, data)
 		shark.PanicIfError(err)
 	default:
 		panic(fmt.Sprintf("Unsupported type [%s]", fieldVal.Type().String()))

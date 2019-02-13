@@ -507,8 +507,19 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 		fieldVal.Set(slice)
 	case reflect.Struct:
 		data := fieldVal.Addr().Interface()
-		b, err := json.Marshal(value)
-		shark.PanicIfError(err)
+		var b []byte
+		var err error
+
+		// Check if the value is the serialization of field value, convert the
+		// string to bytes (PostgreSQL). If not (struct or map value for MongoDB
+		// sub documents) we serialize the struct or map to json and then in both
+		// situations, deserialize the bytes to defined struct format in field.
+		if strVal, ok := value.(string); ok {
+			b = []byte(strVal)
+		} else {
+			b, err = json.Marshal(value)
+		}
+
 		err = json.Unmarshal(b, data)
 		shark.PanicIfError(err)
 	default:

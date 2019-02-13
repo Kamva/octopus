@@ -443,7 +443,9 @@ func (m *Model) fillScheme(scheme base.Scheme, data base.RecordMap) {
 				fieldName = nautilus.ToSnake(fieldData.Name)
 			}
 
-			m.setFieldValue(scheme, fieldData.Name, data[fieldName])
+			if _, ok := data[fieldName]; ok {
+				m.setFieldValue(scheme, fieldData.Name, data[fieldName])
+			}
 		}
 	}
 }
@@ -587,7 +589,13 @@ func (m *Model) generateRecordData(scheme base.Scheme, insert bool) *base.Record
 				fieldName = nautilus.ToSnake(fieldData.Name)
 			}
 
-			if (insert && m.isEmpty(fieldData.Value)) || (!insert && fieldName == scheme.GetKeyName()) {
+			// If we are inserting, new record we should skip empty columns if it
+			// is set as null, or if it is empty ObjectID when driver is set to
+			// mongodb.
+			// If we are updating, we should only skip identifier field, despite
+			// of its value.
+			_, nullable := tagData["null"]
+			if m.shouldSkipField(insert, nullable, fieldData.Value, fieldName, scheme) {
 				continue
 			}
 
@@ -598,10 +606,28 @@ func (m *Model) generateRecordData(scheme base.Scheme, insert bool) *base.Record
 	return data
 }
 
-func (m *Model) isEmpty(value interface{}) bool {
-	if oid, ok := value.(bson.ObjectId); ok {
-		value = oid.Hex()
+func (m *Model) shouldSkipField(insert bool, nullable bool, value interface{}, fieldName string, scheme base.Scheme) bool {
+	if fieldName == scheme.GetKeyName() {
+		return true
+	} else if insert {
+		return (nullable && m.isZero(value)) || (m.config.Driver == base.Mongo && m.isObjectID(value) && m.isZero(value))
 	}
 
-	return value == nil || value == ""
+	return false
+}
+
+func (m *Model) isZero(value interface{}) bool {
+	t := reflect.TypeOf(value)
+	if !t.Comparable() {
+		panic(fmt.Errorf("type is not comparable: %v", t))
+		return false
+
+	}
+	return value == reflect.Zero(t).Interface()
+}
+
+func (m *Model) isObjectID(value interface{}) bool {
+	_, ok := value.(bson.ObjectId)
+
+	return ok
 }

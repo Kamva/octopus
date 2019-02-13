@@ -2,14 +2,16 @@ package octopus
 
 import (
 	"errors"
+	"math/rand"
 	"testing"
+
+	"github.com/stretchr/testify/mock"
 
 	"github.com/Kamva/octopus/base"
 	. "github.com/Kamva/octopus/internal"
 	"github.com/Kamva/octopus/term"
 	"github.com/globalsign/mgo/bson"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 // ----------------------
@@ -59,13 +61,13 @@ func (u User) GetID() interface{} {
 
 type Profile struct {
 	scheme
-	ID     int
+	ID     int `sql:"pk"`
 	Name   string
 	Age    int
 	Status bool
-	Rate   float32
-	Score  uint
-	Worth  uint64
+	Rate   float32 `sql:"null"`
+	Score  uint    `sql:"null"`
+	Worth  uint64  `sql:"null"`
 }
 
 func (p Profile) GetSchema() string {
@@ -608,34 +610,98 @@ func TestModel_Where(t *testing.T) {
 
 func TestModel_Create(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		config := base.DBConfig{Driver: base.Mongo}
-		model := makeModel(&User{}, config)
 
-		rData := base.NewRecordData(
-			[]string{"name", "age", "available"},
-			base.RecordMap{"name": "Test", "age": 18, "available": false},
-		)
+		t.Run("mongo", func(t *testing.T) {
+			config := base.DBConfig{Driver: base.Mongo}
+			model := makeModel(&User{}, config)
 
-		objectID := bson.NewObjectId()
-		client := new(Client)
-		client.On("Close").Return()
-		client.On("Insert", "users", rData).Return(nil).
-			Run(func(args mock.Arguments) {
-				rd := args.Get(1).(*base.RecordData)
-				rd.Set("_id", objectID)
-				rd.Set("age", 18)
-			})
-		model.client = client
+			rData := base.NewRecordData(
+				[]string{"name", "age", "available"},
+				base.RecordMap{"name": "Test", "age": 18, "available": false},
+			)
 
-		user := User{Name: "Test", Age: 18, Status: false}
+			objectID := bson.NewObjectId()
+			client := new(Client)
+			client.On("Close").Return()
+			client.On("Insert", "users", rData).Return(nil).
+				Run(func(args mock.Arguments) {
+					rd := args.Get(1).(*base.RecordData)
+					rd.Set("_id", objectID)
+					rd.Set("age", 18)
+				})
+			model.client = client
 
-		err := model.Create(&user)
+			user := User{Name: "Test", Age: 18, Status: false}
 
-		assert.Nil(t, err)
-		assert.Equal(t, objectID, user.ID)
-		assert.Equal(t, "Test", user.Name)
-		assert.Equal(t, 18, user.Age)
-		assert.Equal(t, false, user.Status)
+			err := model.Create(&user)
+
+			assert.Nil(t, err)
+			assert.Equal(t, objectID, user.ID)
+			assert.Equal(t, "Test", user.Name)
+			assert.Equal(t, 18, user.Age)
+			assert.Equal(t, false, user.Status)
+		})
+
+		t.Run("postgres", func(t *testing.T) {
+			config := base.DBConfig{Driver: base.PG}
+			model := makeModel(&Profile{}, config)
+
+			rData := base.NewRecordData(
+				[]string{"name", "age", "status"},
+				base.RecordMap{"name": "Test", "age": 18, "status": false},
+			)
+
+			id := rand.Int()
+			client := new(Client)
+			client.On("Close").Return()
+			client.On("Insert", "profiles", rData).Return(nil).
+				Run(func(args mock.Arguments) {
+					rd := args.Get(1).(*base.RecordData)
+					rd.Set("id", id)
+				})
+			model.client = client
+
+			profile := Profile{Name: "Test", Age: 18, Status: false}
+
+			err := model.Create(&profile)
+
+			assert.Nil(t, err)
+			assert.Equal(t, id, profile.ID)
+			assert.Equal(t, "Test", profile.Name)
+			assert.Equal(t, 18, profile.Age)
+			assert.Equal(t, false, profile.Status)
+		})
+
+		t.Run("mssql", func(t *testing.T) {
+			config := base.DBConfig{Driver: base.MSSQL}
+			model := makeModel(&Profile{}, config)
+
+			rData := base.NewRecordData(
+				[]string{"name", "age", "status"},
+				base.RecordMap{"name": "Test", "age": 18, "status": false},
+			)
+
+			id := rand.Int()
+			client := new(Client)
+			client.On("Close").Return()
+			client.On("Insert", "acc.profiles", rData).Return(nil).
+				Run(func(args mock.Arguments) {
+					rd := args.Get(1).(*base.RecordData)
+					rd.Set("id", id)
+				})
+			model.client = client
+
+			profile := Profile{Name: "Test", Age: 18, Status: false}
+
+			err := model.Create(&profile)
+
+			assert.Nil(t, err)
+			assert.Equal(t, id, profile.ID)
+			assert.Equal(t, "Test", profile.Name)
+			assert.Equal(t, 18, profile.Age)
+			assert.Equal(t, false, profile.Status)
+		})
+
 	})
 
 	t.Run("failed", func(t *testing.T) {

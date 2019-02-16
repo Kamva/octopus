@@ -479,32 +479,46 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 			fieldVal.SetString(value.(string))
 		}
 	case reflect.Map:
-		data := fieldVal.Addr().Interface().(*base.JSONMap)
-		err := json.Unmarshal([]byte(value.(string)), data)
-		shark.PanicIfError(err)
-	case reflect.Array, reflect.Slice:
-		valBytes := []byte(value.(string))
-		s := string(valBytes[1 : len(valBytes)-1])
-
-		// if value contains `","` it means that it is array of json
-		// so for preventing conflict in splitting the string we
-		// replace `","` with `"|"` and split string by |
-		values := make([]string, 0)
-		if strings.Contains(s, `","`) {
-			s = strings.Replace(s, `","`, `"|"`, -1)
-			values = strings.Split(s, "|")
+		// If the value is string, it is probably, a serialized format of map.
+		if strVal, ok := value.(string); ok {
+			data := fieldVal.Addr().Interface().(*base.JSONMap)
+			err := json.Unmarshal([]byte(strVal), data)
+			shark.PanicIfError(err)
 		} else {
-			values = strings.Split(s, ",")
+			fieldVal.Set(reflect.ValueOf(value))
 		}
+	case reflect.Array, reflect.Slice:
+		// If field type is slice or array and returning data is a string, it is
+		// possible that an array data is saved serialized array. (Mostly arrays
+		// in PostgreSQL)
+		if strVal, ok := value.(string); ok {
+			// Remove start and end character from
+			valBytes := []byte(strVal)
+			s := string(valBytes[1 : len(valBytes)-1])
 
-		slice := reflect.MakeSlice(fieldVal.Type(), len(values), len(values))
+			// if value contains `","` it means that it is array of json
+			// so for preventing conflict in splitting the string we
+			// replace `","` with `"|"` and split string by |
+			values := make([]string, 0)
+			if strings.Contains(s, `","`) {
+				s = strings.Replace(s, `","`, `"|"`, -1)
+				values = strings.Split(s, "|")
+			} else {
+				values = strings.Split(s, ",")
+			}
 
-		for i, value := range values {
-			x := slice.Index(i)
-			x.Set(m.makeSliceValue(x, value))
+			slice := reflect.MakeSlice(fieldVal.Type(), len(values), len(values))
+
+			for i, value := range values {
+				x := slice.Index(i)
+				x.Set(m.makeSliceValue(x, value))
+			}
+
+			fieldVal.Set(slice)
+		} else {
+			// Here, we assume that the returning data is slice or array.
+			fieldVal.Set(reflect.ValueOf(value))
 		}
-
-		fieldVal.Set(slice)
 	case reflect.Struct:
 		data := fieldVal.Addr().Interface()
 		var b []byte

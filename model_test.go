@@ -150,7 +150,7 @@ type inner struct {
 	Field2 string
 }
 
-type Special struct {
+type PGSpecial struct {
 	scheme
 	Map          base.JSONMap
 	Struct       inner
@@ -170,6 +170,21 @@ type Special struct {
 	SliceJSON    []base.JSONMap `sql:"column:slice_json"`
 	SliceStruct  []inner
 	SliceBool    []bool
+}
+
+type MongoSubDoc struct {
+	Field1 string `bson:"field1"`
+	Field2 int    `bson:"field2"`
+}
+
+type MongoSpecial struct {
+	scheme
+	SubDocStruct MongoSubDoc   `bson:"sub_doc_struct"`
+	SubDocMap    base.JSONMap  `bson:"sub_doc_map"`
+	SubDocArray  []MongoSubDoc `bson:"sub_doc_array"`
+	StringArray  []string      `bson:"string_array"`
+	IntArray     []int         `bson:"int_array"`
+	BoolArray    []bool        `bson:"bool_array"`
 }
 
 type Invalid struct {
@@ -420,9 +435,53 @@ func TestModel_Find(t *testing.T) {
 		assert.Equal(t, false, p.Status)
 	})
 
+	t.Run("mongodbSpecialTypes", func(t *testing.T) {
+		config := base.DBConfig{Driver: base.Mongo}
+		model := makeModel(&MongoSpecial{}, config)
+
+		subDocStruct1 := MongoSubDoc{Field1: "test", Field2: 1}
+		subDocStruct2 := MongoSubDoc{Field1: "test", Field2: 2}
+		subDocMap := base.JSONMap{"key1": "test", "key2": 1}
+		subDocArr := []MongoSubDoc{subDocStruct1, subDocStruct2}
+		strArr := []string{"A", "B", "C"}
+		intArr := []int{1, 2, 3}
+		boolArr := []bool{true, false, false}
+		u := base.NewRecordData(
+			[]string{"sub_doc_struct", "sub_doc_map", "sub_doc_array", "string_array", "int_array", "bool_array"},
+			base.RecordMap{
+				"sub_doc_struct": subDocStruct1,
+				"sub_doc_map":    subDocMap,
+				"sub_doc_array":  subDocArr,
+				"string_array":   strArr,
+				"int_array":      intArr,
+				"bool_array":     boolArr,
+			},
+		)
+
+		objectID := bson.NewObjectId()
+		client := new(Client)
+		client.On("Close").Return()
+		client.On("FindByID", "mongo_specials", objectID).Return(*u, nil)
+		model.client = client
+
+		res, err := model.Find(objectID)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
+
+		m := res.(*MongoSpecial)
+
+		assert.Equal(t, subDocStruct1, m.SubDocStruct)
+		assert.Equal(t, subDocMap, m.SubDocMap)
+		assert.Equal(t, subDocArr, m.SubDocArray)
+		assert.Equal(t, strArr, m.StringArray)
+		assert.Equal(t, intArr, m.IntArray)
+		assert.Equal(t, boolArr, m.BoolArray)
+	})
+
 	t.Run("postgresSpecialTypes", func(t *testing.T) {
 		config := base.DBConfig{Driver: base.PG}
-		model := makeModel(&Special{}, config)
+		model := makeModel(&PGSpecial{}, config)
 		u := base.NewRecordData(
 			[]string{
 				"map", "struct", "slice_int", "slice_int_8", "slice_int_16",
@@ -452,9 +511,10 @@ func TestModel_Find(t *testing.T) {
 				"slice_bool":     "{t,t,f}",
 			},
 		)
+
 		client := new(Client)
 		client.On("Close").Return()
-		client.On("FindByID", "specials", 1).Return(*u, nil)
+		client.On("FindByID", "pg_specials", 1).Return(*u, nil)
 		model.client = client
 
 		res, err := model.Find(1)
@@ -462,7 +522,7 @@ func TestModel_Find(t *testing.T) {
 		assert.Nil(t, err)
 		assert.NotNil(t, res)
 
-		p := res.(*Special)
+		p := res.(*PGSpecial)
 
 		assert.Equal(t, "b", p.Map["a"])
 		assert.Equal(t, float64(1), p.Map["c"])

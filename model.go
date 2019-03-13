@@ -461,17 +461,48 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		if val, ok := value.(int); ok {
 			fieldVal.SetInt(int64(val))
+		} else if val, ok := value.(int8); ok {
+			fieldVal.SetInt(int64(val))
+		} else if val, ok := value.(int16); ok {
+			fieldVal.SetInt(int64(val))
+		} else if val, ok := value.(int32); ok {
+			fieldVal.SetInt(int64(val))
 		} else {
 			fieldVal.SetInt(value.(int64))
 		}
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32:
-		fieldVal.SetUint(uint64(value.(int64)))
+		if val, ok := value.(uint); ok {
+			fieldVal.SetUint(uint64(val))
+		} else if val, ok := value.(uint8); ok {
+			fieldVal.SetUint(uint64(val))
+		} else if val, ok := value.(uint16); ok {
+			fieldVal.SetUint(uint64(val))
+		} else if val, ok := value.(uint32); ok {
+			fieldVal.SetUint(uint64(val))
+		} else {
+			// Most Databases treated uint types as int type
+			if val, ok := value.(int); ok {
+				fieldVal.SetUint(uint64(val))
+			} else if val, ok := value.(int8); ok {
+				fieldVal.SetUint(uint64(val))
+			} else if val, ok := value.(int16); ok {
+				fieldVal.SetUint(uint64(val))
+			} else if val, ok := value.(int32); ok {
+				fieldVal.SetUint(uint64(val))
+			} else {
+				fieldVal.SetUint(uint64(value.(int64)))
+			}
+		}
 	case reflect.Uint64:
 		f64, err := strconv.ParseFloat(value.(string), 64)
 		shark.PanicIfError(err)
 		fieldVal.SetUint(uint64(f64))
 	case reflect.Float32, reflect.Float64:
-		fieldVal.SetFloat(value.(float64))
+		if val, ok := value.(float32); ok {
+			fieldVal.SetFloat(float64(val))
+		} else {
+			fieldVal.SetFloat(value.(float64))
+		}
 	case reflect.String:
 		if oid, ok := value.(bson.ObjectId); ok {
 			fieldVal.Set(reflect.ValueOf(oid))

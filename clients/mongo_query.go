@@ -119,5 +119,5 @@ func (q *mongoQuery) Delete() (int, error) {
 }
 
 func newMongoQuery(query base.MongoQuery, collection base.MongoCollection, queryMap bson.M) *mongoQuery {
-	return &mongoQuery{query: query}
+	return &mongoQuery{query: query, collection: collection, queryMap: queryMap}
 }

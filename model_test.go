@@ -1,6 +1,7 @@
 package octopus
 
 import (
+	"encoding/json"
 	"errors"
 	"math/rand"
 	"testing"
@@ -37,6 +38,11 @@ func makeModel(s base.Scheme, c base.DBConfig, cn ...Configurator) Model {
 	model.Initiate(s, c, cn...)
 
 	return model
+}
+
+func jsonMarshal(v interface{}) string {
+	b, _ := json.Marshal(v)
+	return string(b)
 }
 
 type scheme struct {
@@ -472,8 +478,8 @@ func TestModel_Find(t *testing.T) {
 		m := res.(*MongoSpecial)
 
 		assert.Equal(t, subDocStruct1, m.SubDocStruct)
-		assert.Equal(t, subDocMap, m.SubDocMap)
-		assert.Equal(t, subDocArr, m.SubDocArray)
+		assert.Equal(t, jsonMarshal(subDocMap), jsonMarshal(m.SubDocMap))
+		assert.Equal(t, jsonMarshal(subDocArr), jsonMarshal(m.SubDocArray))
 		assert.Equal(t, strArr, m.StringArray)
 		assert.Equal(t, intArr, m.IntArray)
 		assert.Equal(t, boolArr, m.BoolArray)
@@ -659,8 +665,9 @@ func TestModel_Where(t *testing.T) {
 
 	client := new(Client)
 	client.On("Close").Return()
-	builder := new(QueryBuilder)
-	client.On("Query", "profiles", conditions[0], conditions[1]).Return(builder)
+	queryBuilder := new(QueryBuilder)
+	builder := NewBuilder(queryBuilder, &Profile{})
+	client.On("Query", "profiles", conditions[0], conditions[1]).Return(queryBuilder)
 	model.client = client
 
 	b := model.Where(conditions...)

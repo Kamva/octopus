@@ -666,7 +666,7 @@ func TestModel_Where(t *testing.T) {
 	client := new(Client)
 	client.On("Close").Return()
 	queryBuilder := new(QueryBuilder)
-	builder := NewBuilder(queryBuilder, &Profile{})
+	builder := NewBuilder(queryBuilder, &Profile{}, client)
 	client.On("Query", "profiles", conditions[0], conditions[1]).Return(queryBuilder)
 	model.client = client
 

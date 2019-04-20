@@ -88,10 +88,9 @@ func (m *Model) Find(id interface{}) (base.Scheme, error) {
 // that you can fetch, update or delete records/document match the query.
 func (m *Model) Where(query ...base.Condition) base.Builder {
 	m.PrepareClient()
-	defer m.CloseClient()
 
 	queryBuilder := m.client.Query(m.tableName, query...)
-	return NewBuilder(queryBuilder, m.scheme)
+	return NewBuilder(queryBuilder, m.scheme, m.client)
 }
 
 // Create inserts the given filled scheme into model table/collection and return

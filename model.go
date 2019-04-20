@@ -516,7 +516,9 @@ func (m *Model) setFieldValue(scheme base.Scheme, field string, value interface{
 			err := json.Unmarshal([]byte(strVal), data)
 			shark.PanicIfError(err)
 		} else {
-			fieldVal.Set(reflect.ValueOf(value))
+			b, _ := json.Marshal(value)
+			field := fieldVal.Addr().Interface()
+			json.Unmarshal(b, field)
 		}
 	case reflect.Array, reflect.Slice:
 		// If field type is slice or array and returning data is a string, it is

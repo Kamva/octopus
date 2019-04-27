@@ -112,3 +112,43 @@ type MsScheme interface {
 	// GetSchema returns name of the table schema
 	GetSchema() string
 }
+
+// Builder is a wrapper around QueryBuilder that convert RecordData object to
+// model's related scheme.
+type Builder interface {
+
+	// OrderBy set the order of returning result in following command
+	OrderBy(sorts ...Sort) Builder
+
+	// Limit set the limit that determines how many results should be
+	// returned in the following fetch command.
+	Limit(n int) Builder
+
+	// Skip set the starting offset of the following fetch command
+	Skip(n int) Builder
+
+	// Count execute a count command that will return the number records in
+	// specified destination table. If the query conditions was empty, it
+	// returns number of all records un destination table.
+	Count() (int, error)
+
+	// First fetch data of the first record that match with query conditions.
+	First() (Scheme, error)
+
+	// All returns results that match with query conditions in RecordDataSet
+	// format. If the query conditions was empty it will return all records
+	// in specified destination table or error if anything went wrong.
+	All() ([]Scheme, error)
+
+	// Update updates records that math with query conditions with `data` and
+	// returns number of affected rows and error if anything went wring. If
+	// the query condition was empty it'll update all records in destination
+	// table.
+	Update(data Scheme) (int, error)
+
+	// Delete removes every records in destination table that match with condition
+	// query and returns number of affected rows and error if anything went wrong.
+	// It will removes all records inside destination table if no condition query
+	// was set.
+	Delete() (int, error)
+}

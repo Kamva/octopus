@@ -71,11 +71,19 @@ func (q *sqlQuery) Count() (int, error) {
 func (q *sqlQuery) All() (base.RecordDataSet, error) {
 	whereClause := q.parseWhere()
 	optionClause := q.parseOptions()
+	var query string
 
-	rows, err := queryDB(q.session, strings.TrimRight(fmt.Sprintf(
-		"SELECT * FROM %s WHERE %s %s", q.table, whereClause, optionClause,
-	), " "))
+	if whereClause != "" {
+		query = strings.TrimRight(fmt.Sprintf(
+			"SELECT * FROM %s WHERE %s %s", q.table, whereClause, optionClause,
+		), " ")
+	} else {
+		query = strings.TrimRight(fmt.Sprintf(
+			"SELECT * FROM %s %s", q.table, optionClause,
+		), " ")
+	}
 
+	rows, err := queryDB(q.session, query)
 	if err != nil {
 		return nil, err
 	}

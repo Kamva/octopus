@@ -1,6 +1,10 @@
 package octopus
 
-import "github.com/Kamva/octopus/base"
+import (
+	"reflect"
+
+	"github.com/Kamva/octopus/base"
+)
 
 // Builder is a wrapper around QueryBuilder that convert RecordData object to
 // model's related scheme.
@@ -73,8 +77,9 @@ func (b *Builder) All() ([]base.Scheme, error) {
 
 	var schemeSet []base.Scheme
 	for _, data := range dataSet {
-		fillScheme(b.scheme, *data.GetMap())
-		schemeSet = append(schemeSet, b.scheme)
+		scheme := reflect.New(reflect.ValueOf(b.scheme).Elem().Type()).Interface().(base.Scheme)
+		fillScheme(scheme, *data.GetMap())
+		schemeSet = append(schemeSet, scheme)
 	}
 
 	return schemeSet, nil

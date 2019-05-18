@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/Kamva/nautilus"
+	"github.com/Kamva/nautilus/types"
 	"github.com/Kamva/octopus/base"
 	"github.com/Kamva/shark"
 	"github.com/globalsign/mgo/bson"
@@ -125,7 +126,7 @@ func setFieldValue(scheme base.Scheme, field string, value interface{}) {
 	case reflect.Map:
 		// If the value is string, it is probably, a serialized format of map.
 		if strVal, ok := value.(string); ok {
-			data := fieldVal.Addr().Interface().(*base.JSONMap)
+			data := fieldVal.Addr().Interface().(*types.JSONMap)
 			err := json.Unmarshal([]byte(strVal), data)
 			shark.PanicIfError(err)
 		} else {
@@ -271,7 +272,7 @@ func makeSliceValue(elem reflect.Value, value string) reflect.Value {
 	case reflect.String:
 		cVal, err = value, nil
 	case reflect.Map:
-		jsonMap := make(base.JSONMap)
+		jsonMap := make(types.JSONMap)
 		value = strings.Replace(value, "\\", "", -1)
 		err = json.Unmarshal([]byte(value)[1:len(value)-1], &jsonMap)
 		cVal = jsonMap

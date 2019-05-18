@@ -76,6 +76,3 @@ func (c CollectionInfo) GetInfo() interface{} {
 
 // SQLTag is a map of scheme sql tags key value
 type SQLTag map[string]string
-
-// JSONMap is a map represent a json in key value format
-type JSONMap map[string]interface{}

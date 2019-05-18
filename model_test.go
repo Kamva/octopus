@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/Kamva/nautilus/types"
+
 	"github.com/stretchr/testify/mock"
 
 	"github.com/Kamva/octopus/base"
@@ -158,7 +160,7 @@ type inner struct {
 
 type PGSpecial struct {
 	scheme
-	Map          base.JSONMap
+	Map          types.JSONMap
 	Struct       inner
 	SliceInt     []int
 	SliceInt8    []int8
@@ -173,7 +175,7 @@ type PGSpecial struct {
 	SliceFloat32 []float32
 	SliceFloat64 []float64
 	SliceString  []string
-	SliceJSON    []base.JSONMap `sql:"column:slice_json"`
+	SliceJSON    []types.JSONMap `sql:"column:slice_json"`
 	SliceStruct  []inner
 	SliceBool    []bool
 }
@@ -186,7 +188,7 @@ type MongoSubDoc struct {
 type MongoSpecial struct {
 	scheme
 	SubDocStruct MongoSubDoc   `bson:"sub_doc_struct"`
-	SubDocMap    base.JSONMap  `bson:"sub_doc_map"`
+	SubDocMap    types.JSONMap `bson:"sub_doc_map"`
 	SubDocArray  []MongoSubDoc `bson:"sub_doc_array"`
 	StringArray  []string      `bson:"string_array"`
 	IntArray     []int         `bson:"int_array"`
@@ -447,7 +449,7 @@ func TestModel_Find(t *testing.T) {
 
 		subDocStruct1 := MongoSubDoc{Field1: "test", Field2: 1}
 		subDocStruct2 := MongoSubDoc{Field1: "test", Field2: 2}
-		subDocMap := base.JSONMap{"key1": "test", "key2": 1}
+		subDocMap := types.JSONMap{"key1": "test", "key2": 1}
 		subDocArr := []MongoSubDoc{subDocStruct1, subDocStruct2}
 		strArr := []string{"A", "B", "C"}
 		intArr := []int{1, 2, 3}
@@ -587,7 +589,7 @@ func TestModel_Find(t *testing.T) {
 		assert.Equal(t, "a", p.SliceString[0])
 		assert.Equal(t, "b", p.SliceString[1])
 		assert.Equal(t, "c", p.SliceString[2])
-		assert.IsType(t, make([]base.JSONMap, 0), p.SliceJSON)
+		assert.IsType(t, make([]types.JSONMap, 0), p.SliceJSON)
 		assert.Equal(t, "b", p.SliceJSON[0]["a"])
 		assert.Equal(t, "d", p.SliceJSON[1]["c"])
 		assert.IsType(t, make([]inner, 0), p.SliceStruct)

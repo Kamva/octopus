@@ -40,6 +40,12 @@ func makeModel(s base.Scheme, c base.DBConfig, cn ...Configurator) Model {
 	return model
 }
 
+func makeBuilder(builder *QueryBuilder, model Model, client *Client) *Builder {
+	model.client = client
+
+	return NewBuilder(builder, &model)
+}
+
 func jsonMarshal(v interface{}) string {
 	b, _ := json.Marshal(v)
 	return string(b)
@@ -666,7 +672,7 @@ func TestModel_Where(t *testing.T) {
 	client := new(Client)
 	client.On("Close").Return()
 	queryBuilder := new(QueryBuilder)
-	builder := NewBuilder(queryBuilder, &Profile{}, client)
+	builder := makeBuilder(queryBuilder, model, client)
 	client.On("Query", "profiles", conditions[0], conditions[1]).Return(queryBuilder)
 	model.client = client
 

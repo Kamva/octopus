@@ -10,13 +10,12 @@ import (
 // model's related scheme.
 type Builder struct {
 	builder base.QueryBuilder
-	scheme  base.Scheme
-	client  base.Client
+	model   *Model
 }
 
 // NewBuilder instantiate Builder with given QueryBuilder
-func NewBuilder(builder base.QueryBuilder, scheme base.Scheme, client base.Client) *Builder {
-	return &Builder{builder: builder, scheme: scheme, client: client}
+func NewBuilder(builder base.QueryBuilder, model *Model) *Builder {
+	return &Builder{builder: builder, model: model}
 }
 
 // OrderBy set the order of returning result in following command
@@ -45,30 +44,30 @@ func (b *Builder) Skip(n int) base.Builder {
 // specified destination table. If the query conditions was empty, it
 // returns number of all records un destination table.
 func (b *Builder) Count() (int, error) {
-	defer b.client.Close()
+	defer b.model.CloseClient()
 
 	return b.builder.Count()
 }
 
 // First fetch data of the first record that match with query conditions.
 func (b *Builder) First() (base.Scheme, error) {
-	defer b.client.Close()
+	defer b.model.CloseClient()
 
 	data, err := b.builder.First()
 	if err != nil {
 		return nil, err
 	}
 
-	fillScheme(b.scheme, *data.GetMap())
+	fillScheme(b.model.scheme, *data.GetMap())
 
-	return b.scheme, nil
+	return b.model.scheme, nil
 }
 
 // All returns results that match with query conditions in RecordDataSet
 // format. If the query conditions was empty it will return all records
 // in specified destination table or error if anything went wrong.
 func (b *Builder) All() ([]base.Scheme, error) {
-	defer b.client.Close()
+	defer b.model.CloseClient()
 
 	dataSet, err := b.builder.All()
 	if err != nil {
@@ -77,7 +76,7 @@ func (b *Builder) All() ([]base.Scheme, error) {
 
 	var schemeSet []base.Scheme
 	for _, data := range dataSet {
-		scheme := reflect.New(reflect.ValueOf(b.scheme).Elem().Type()).Interface().(base.Scheme)
+		scheme := reflect.New(reflect.ValueOf(b.model.scheme).Elem().Type()).Interface().(base.Scheme)
 		fillScheme(scheme, *data.GetMap())
 		schemeSet = append(schemeSet, scheme)
 	}
@@ -90,7 +89,7 @@ func (b *Builder) All() ([]base.Scheme, error) {
 // the query condition was empty it'll update all records in destination
 // table.
 func (b *Builder) Update(data base.Scheme) (int, error) {
-	defer b.client.Close()
+	defer b.model.CloseClient()
 
 	recordData := generateRecordData(data, false)
 
@@ -102,7 +101,7 @@ func (b *Builder) Update(data base.Scheme) (int, error) {
 // It will removes all records inside destination table if no condition query
 // was set.
 func (b *Builder) Delete() (int, error) {
-	defer b.client.Close()
+	defer b.model.CloseClient()
 
 	return b.builder.Delete()
 }

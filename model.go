@@ -90,7 +90,7 @@ func (m *Model) Where(query ...base.Condition) base.Builder {
 	m.PrepareClient()
 
 	queryBuilder := m.client.Query(m.tableName, query...)
-	return NewBuilder(queryBuilder, m.scheme, m.client)
+	return NewBuilder(queryBuilder, m)
 }
 
 // Create inserts the given filled scheme into model table/collection and return

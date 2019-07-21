@@ -1,6 +1,7 @@
 package octopus
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -129,6 +130,24 @@ func (m *Model) Delete(data base.Scheme) error {
 	defer m.CloseClient()
 
 	return m.client.DeleteByID(m.tableName, data.GetID())
+}
+
+// GetClient returns database client.
+// Note that client should be closed after use.
+func (m *Model) GetClient() base.Client {
+	m.PrepareClient()
+	return m.client
+}
+
+// GetCollection returns collection object for mongo db.
+func (m *Model) GetCollection() (base.MongoCollection, error) {
+	c := m.GetClient()
+	client, ok := c.(*clients.MongoDB)
+	if !ok {
+		return nil, errors.New("cannot call GetCollection on a non-mongodb model")
+	}
+
+	return client.GetCollection(m.tableName), nil
 }
 
 // Guess the table name based on scheme name

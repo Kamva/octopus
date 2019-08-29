@@ -183,7 +183,7 @@ func setFieldValue(scheme base.Scheme, field string, value interface{}) {
 		err = json.Unmarshal(b, data)
 		shark.PanicIfError(err)
 	case reflect.Ptr:
-		if value == nil {
+		if value != nil {
 			rv := reflect.New(reflect.TypeOf(value))
 			rv.Elem().Set(reflect.ValueOf(value))
 			fieldVal.Set(rv)

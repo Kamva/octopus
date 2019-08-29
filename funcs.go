@@ -184,9 +184,11 @@ func setFieldValue(scheme base.Scheme, field string, value interface{}) {
 		err = json.Unmarshal(b, data)
 		shark.PanicIfError(err)
 	case reflect.Ptr:
-		rv := reflect.New(reflect.TypeOf(value))
-		rv.Elem().Set(reflect.ValueOf(value))
-		fieldVal.Set(rv)
+		if value == nil {
+			rv := reflect.New(reflect.TypeOf(value))
+			rv.Elem().Set(reflect.ValueOf(value))
+			fieldVal.Set(rv)
+		}
 	default:
 		panic(fmt.Sprintf("Unsupported type [%s]", fieldVal.Type().String()))
 	}

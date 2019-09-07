@@ -184,9 +184,16 @@ func setFieldValue(scheme base.Scheme, field string, value interface{}) {
 		shark.PanicIfError(err)
 	case reflect.Ptr:
 		if value != nil {
-			rv := reflect.New(reflect.TypeOf(value))
-			rv.Elem().Set(reflect.ValueOf(value))
-			fieldVal.Set(rv)
+			v := reflect.ValueOf(value)
+
+			// if the value is not a pointer vale
+			if v.Kind() != reflect.Ptr {
+				rv := reflect.New(reflect.TypeOf(value))
+				rv.Elem().Set(v)
+				v = rv
+			}
+
+			fieldVal.Set(v)
 		}
 	default:
 		panic(fmt.Sprintf("Unsupported type [%s]", fieldVal.Type().String()))
